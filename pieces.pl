@@ -134,3 +134,49 @@ legal_move_queen(piece(Color, queen, X, Y), Board, X1,Y1) :-
     empty_spot(X3, Y3, Board),
     !.
 
+legal_move_king(piece(Color, king, X, Y), Board, X1,Y1) :-
+    X1 > 0, X1 < 9,
+    Y1 > 0, Y1 < 9,
+    abs2(X1-X, X2),
+    abs2(Y1-Y, Y2),
+    (
+        (
+            X2 =:= 1,
+            Y2 =:= 1,
+            (
+                (
+                    (X < X1, Y < Y1) -> stepper(X,Y,X1,Y1,[1|1],X3,Y3)
+                );(
+                    (X > X1, Y < Y1) -> stepper(X,Y,X1,Y1,[-1|1],X3,Y3)
+                );(
+                    (X < X1, Y > Y1) -> stepper(X,Y,X1,Y1,[1|-1],X3,Y3)
+                );(
+                    (X > X1, Y > Y1) -> stepper(X,Y,X1,Y1,[-1|-1],X3,Y3)
+                )
+            )
+        );
+        (
+            X2 =:= 0,
+            Y2 =:= 1,
+            (
+                (
+                    (Y < Y1) -> stepper(X,Y,X1,Y1,[0|1],X3,Y3)
+                );(
+                    (Y > Y1) -> stepper(X,Y,X1,Y1,[0|-1],X3,Y3)
+                )
+            )
+        );
+        (
+            X2 =:= 1,
+            Y2 =:= 0,
+            (
+                (
+                    (X < X1) -> stepper(X,Y,X1,Y1,[1|0],X3,Y3)
+                );(
+                    (X > X1) -> stepper(X,Y,X1,Y1,[-1|0],X3,Y3)
+                )
+            ),
+        )
+    ),
+    empty_spot(X3, Y3, Board),
+    !.
