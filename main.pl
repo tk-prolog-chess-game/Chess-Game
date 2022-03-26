@@ -1,3 +1,5 @@
+:- debug.
+
 setup_board(B) :-
     B = [piece(b,rook,1,1),piece(b,knight,2,1),piece(b,bishop,3,1),piece(b,queen,4,1),piece(b,king,5,1),piece(b,bishop,6,1),piece(b,knight,7,1),piece(b,rook,8,1),
 piece(b,pawn,1,2),piece(b,pawn,2,2),piece(b,pawn,3,2),piece(b,pawn,4,2),piece(b,pawn,5,2),piece(b,pawn,6,2),piece(b,pawn,7,2),piece(b,pawn,8,2),
@@ -123,7 +125,7 @@ letter("-", "_").
 % fixes Input given 
 fixInput(X,Y,NextX,NextY):-
     enterMove(CX,CY,NX,NY),
-    char_code(CX,CX1),
+    char_code(CX,CX1),    
     char_code(NX,NX1),
     X is CX1-96,
     NextX is NX1-96,
@@ -132,36 +134,37 @@ fixInput(X,Y,NextX,NextY):-
 
 enterMove(X,Y,NextX,NextY):-
     repeat,
-    write("\nEnter Player Location and move in form 'a1h8.' or enter 'exit.' to end the game \n"),   % will make prolog try till the answer is in the right form
+    write("\nEnter move location, example : 'a7a6' a7 is the position of piece, a6 is the location to move, or 'exit' to exit the game \n"),   % will make prolog try till the answer is in the right form
     read(Input),
     string_lower(Input,Processed),
     write(Processed),
+    % bagi input menjadi 4 bagian
     sub_string(Processed,0,1,3,XUnprocessed),
     sub_string(Processed,1,1,2,YUnprocessed),
     sub_string(Processed,2,1,1,NextXUnprocessed),
     sub_string(Processed,3,1,0,NextYUnprocessed),
     process_input(XUnprocessed,YUnprocessed,NextXUnprocessed,NextYUnprocessed,X,Y,NextX,NextY).
 
-% p_input (X,Y,X1,Y1,CX,CY,NX,NY) parsing input given and returns true if either quit or correct format is enterted    
+% parsing input given and returns true if either quit or correct format is enterted    
 process_input(XUnprocessed,YUnprocessed,NextXUnprocessed,NextYUnprocessed,X,Y,NextX,NextY):-
-    string_chars(XUnprocessed,[X]),
-    string_chars(YUnprocessed,[Y]),
-    string_chars(NextXUnprocessed,[NextX]),
-    string_chars(NextYUnprocessed,[NextY]),
+    string_to_chars_helper(XUnprocessed,YUnprocessed,NextXUnprocessed,NextYUnprocessed,X,Y,NextX,NextY),
     atom_number(Y,Y1),
     atom_number(NextY,Y2),
     withinBounds(X,Y1,NextX,Y2).
 
 process_input(XUnprocessed,YUnprocessed,NextXUnprocessed,NextYUnprocessed,X,Y,NextX,NextY):-
-    string_chars(XUnprocessed,[X]),
-    string_chars(YUnprocessed,[Y]),
-    string_chars(NextXUnprocessed,[NextX]),
-    string_chars(NextYUnprocessed,[NextY]),
+    string_to_chars_helper(XUnprocessed,YUnprocessed,NextXUnprocessed,NextYUnprocessed,X,Y,NextX,NextY),
     X = e,
     Y = x,
     NextX = i,
     NextY = t,
     halt.
+
+string_to_chars_helper(XUnprocessed,YUnprocessed,NextXUnprocessed,NextYUnprocessed,X,Y,NextX,NextY) :-
+    string_chars(XUnprocessed,[X]),
+    string_chars(YUnprocessed,[Y]),
+    string_chars(NextXUnprocessed,[NextX]),
+    string_chars(NextYUnprocessed,[NextY]).
 
 withinBounds(X,Y,NextX,NextY):-
     char_code(X,VX),
