@@ -1,6 +1,6 @@
 abs2(X,Y) :- 
     X < 0 -> Y is -X;
-    Y = X.
+    Y is X.
 
 abs2(X,Y) :-
     X < 0,
@@ -8,7 +8,7 @@ abs2(X,Y) :-
 
 abs2(X,Y) :-
     X >= 0,
-    Y = X.
+    Y is X.
 
 between(N1, N2, X) :-
     N1 =< N2, X = N1.
@@ -227,4 +227,22 @@ legal_move_king(piece(Color, king, X, Y), Board, X1,Y1) :-
         )
     ),
     empty_spot(X3, Y3, Board),
+    !.
+
+legal_move_knight(piece(Color, knight, X, Y), Board, X1,Y1) :-
+    X1 > 0, X1 < 9,
+    Y1 > 0, Y1 < 9,
+    abs2(X1-X, X2),
+    abs2(Y1-Y, Y2),
+    (
+        (
+            X2 =:= 1,
+            Y2 =:= 3
+        );
+        (
+            X2 =:= 3,
+            Y2 =:= 1
+        )
+    ),
+    empty_spot(X1, Y1, Board),
     !.
