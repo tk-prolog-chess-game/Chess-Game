@@ -17,13 +17,6 @@ between(N1, N2, X) :-
     N3 is N1+1,
     between(N3, N2, X).
 
-r_between(N1, N2, X) :-
-    N1 >= N2, X = N1.
-r_between(N1, N2, X) :-
-    N1 > N2,
-    N3 is N1-1,
-    r_between(N3, N2, X).
-
 flat_stepper(X,Y,X1,Y1,[H|T],X3,Y3) :-
     (
         (
