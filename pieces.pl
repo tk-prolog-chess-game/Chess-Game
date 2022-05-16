@@ -79,10 +79,9 @@ side_stepper(X,Y,X1,Y1,[H|T],X3,Y3) :- %sideways stepper.
     side_stepper(X4,Y4,X1,Y1,[H|T],X3,Y3).
 
 empty_spot(X, Y, Board) :-
-    between(1, 8, X),
-    between(1, 8, Y),
-    member(piece("-", "-", X, Y), Board),
-    !.
+    %between(1, 8, X),
+    %between(1, 8, Y),
+    member(piece("-", "-", X, Y), Board).
 
 legal_move_bishop(piece(Color, bishop, X, Y), Board, X1,Y1) :-
     X1 > 0, X1 < 9,
@@ -237,12 +236,71 @@ legal_move_knight(piece(Color, knight, X, Y), Board, X1,Y1) :-
     (
         (
             X2 =:= 1,
-            Y2 =:= 3
+            Y2 =:= 2
         );
         (
-            X2 =:= 3,
+            X2 =:= 2,
             Y2 =:= 1
         )
     ),
     empty_spot(X1, Y1, Board),
+    !.
+
+legal_move_pawn(piece(Color, pawn, X, Y), Board, X1, Y1) :-
+    X1 > 0, X1 < 9,
+    Y1 > 0, Y1 < 9,
+    abs2(X1-X, X2),
+    abs2(Y1-Y, Y2),
+    (
+        (
+            X2 =:= 0,
+            (
+                (
+                    Color == w,
+                    (
+                        (
+                            Y =:= 2,
+                            Y2 =:= 2
+                        );
+                        (
+                            Y2 =:= 1
+                        )
+                    ),
+                    Y < Y1,
+                    flat_stepper(X,Y,X1,Y1,[0|1],X3,Y3)
+                );
+                (
+                    Color == b,
+                    (
+                        (
+                            Y =:= 7,
+                            Y2 =:= 2
+                        );
+                        (
+                            Y2 =:= 1
+                        )
+                    ),
+                    Y > Y1,
+                    flat_stepper(X,Y,X1,Y1,[0|-1],X3,Y3)
+                )
+            ),
+            empty_spot(X3, Y3, Board)
+        );
+        (
+            X2 =:= 1,
+            Y2 =:= 1,
+            (
+                (
+                    Color == w,
+                    Y < Y1,
+                    member(piece(b, _, X1, Y1), Board)
+                );
+                (
+                    Color == b,
+                    Y > Y1,
+                    member(piece(w, _, X1, Y1), Board)
+                )
+            )
+        )
+    ),
     !.
