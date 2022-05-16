@@ -2,6 +2,14 @@ abs2(X,Y) :-
     X < 0 -> Y is -X;
     Y = X.
 
+abs2(X,Y) :-
+    X < 0,
+    Y is -X.
+
+abs2(X,Y) :-
+    X >= 0,
+    Y = X.
+
 between(N1, N2, X) :-
     N1 =< N2, X = N1.
 between(N1, N2, X) :-
