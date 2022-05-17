@@ -132,5 +132,5 @@ rangePosition(X,Y,NextX,NextY):-
     NextY > -1.
 
 get_position(Z, X, Y):-
-    Z is (X-1)+8*(Y-1).
+    Z is (X-1)+(8*(8-Y)).
 % End of input
