@@ -1,5 +1,6 @@
 :- [board].
 :- [pieces].
+:- [check_chess].
 :- debug.
 
 % Main program
@@ -18,21 +19,20 @@ begin:- setup_board(Board),playGame(w,Board).
 
 playGame(w,Board):-
     \+member(piece(w,king,_,_),Board),
-    %\+legal_move_king(piece(w, king, _, _), Board, _,_);
     writeboard(Board),
     write("\nBlACK WINS!").
 
 %playGame(w,Board):-
-    %member(piece(w,king,X1,Y1),Board),
-    %piece_helper(piece(w,_,_,_),X1,Y1,Board),
+    %check_chess(piece(w, king, _, _), Board),
     %writeboard(Board),
     %write("\nBlACK Check!").
 
 playGame(b,Board):-
     \+member(piece(b,king,_,_),Board),
-    %\+legal_move_king(piece(w, king, _, _), Board, _,_);
     writeboard(Board),
     write("\nWHITE WINS!").
+
+
 playGame(w,Board):-
     writeboard(Board),
     write("\nWHITE TURN"),
