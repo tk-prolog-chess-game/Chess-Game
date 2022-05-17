@@ -22,16 +22,20 @@ playGame(w,Board):-
     writeboard(Board),
     write("\nBlACK WINS!").
 
-%playGame(w,Board):-
-    %check_chess(piece(w, king, _, _), Board),
-    %writeboard(Board),
-    %write("\nBlACK Check!").
-
 playGame(b,Board):-
     \+member(piece(b,king,_,_),Board),
     writeboard(Board),
     write("\nWHITE WINS!").
 
+%playGame(w,Board):-
+    %check_chess(piece(w, king, _, _), Board),
+    %writeboard(Board),
+    %write("\nWhite Check!").
+
+%playGame(b,Board):-
+    %check_chess(piece(b, king, _, _), Board),
+    %writeboard(Board),
+    %write("\nWhite Check!").
 
 playGame(w,Board):-
     writeboard(Board),
