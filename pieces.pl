@@ -363,3 +363,11 @@ legal_move_pawn(piece(Color, pawn, X, Y), Board, X1, Y1) :-
         )
     ),
     !.
+
+piece_helper(piece(Color,Piece,X,Y),X1,Y1,Board) :-
+    legal_move_bishop(piece(Color, Piece, X, Y), Board, X1,Y1);
+    legal_move_rook(piece(Color, Piece, X, Y), Board, X1,Y1);
+    legal_move_queen(piece(Color, Piece, X, Y), Board, X1,Y1);
+    legal_move_king(piece(Color, Piece, X, Y), Board, X1,Y1);
+    legal_move_knight(piece(Color, Piece, X, Y), Board, X1,Y1);
+    legal_move_pawn(piece(Color, Piece, X, Y), Board, X1,Y1).
