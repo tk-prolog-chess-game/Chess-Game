@@ -16,9 +16,11 @@ begin:- setup_board(Board),playGame(w,Board).
 
 playGame(w,Board):-
     \+member(piece(w,king,_,_),Board),
+    writeboard(Board),
     write("\nBlACK WINS!").
 playGame(b,Board):-
     \+member(piece(b,king,_,_),Board),
+    writeboard(Board),
     write("\nWHITE WINS!").
 playGame(w,Board):-
     writeboard(Board),
