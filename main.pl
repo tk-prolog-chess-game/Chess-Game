@@ -1,4 +1,7 @@
 :- [board].
+:- [pieces].
+:- [check_chess].
+:- debug.
 
 % Main program
 instructions :-
@@ -16,10 +19,24 @@ begin:- setup_board(Board),playGame(w,Board).
 
 playGame(w,Board):-
     \+member(piece(w,king,_,_),Board),
+    writeboard(Board),
     write("\nBlACK WINS!").
+
 playGame(b,Board):-
     \+member(piece(b,king,_,_),Board),
+    writeboard(Board),
     write("\nWHITE WINS!").
+
+%playGame(w,Board):-
+    %check_chess(piece(w, king, _, _), Board),
+    %writeboard(Board),
+    %write("\nWhite Check!").
+
+%playGame(b,Board):-
+    %check_chess(piece(b, king, _, _), Board),
+    %writeboard(Board),
+    %write("\nWhite Check!").
+
 playGame(w,Board):-
     writeboard(Board),
     write("\nWHITE TURN"),
@@ -27,7 +44,7 @@ playGame(w,Board):-
     fixInput(X,Y,X1,Y1),
     get_position(Z, X, Y),
     nth0(Z,Board,piece(w,Piece,X,Y)),
-    %piece_helper(piece(w,Piece,X,Y),X1,Y1,Board),
+    piece_helper(piece(w,Piece,X,Y),X1,Y1,Board),
     movePiece(Board,piece(w,Piece,X,Y),X1,Y1,Result),
     playGame(b,Result).
 playGame(b,Board):-
@@ -37,7 +54,7 @@ playGame(b,Board):-
     fixInput(X,Y,X1,Y1),
     get_position(Z, X, Y),
     nth0(Z,Board,piece(b,Piece,X,Y)),
-    %piece_helper(piece(b,Piece,X,Y),X1,Y1,Board),
+    piece_helper(piece(b,Piece,X,Y),X1,Y1,Board),
     movePiece(Board,piece(b,Piece,X,Y),X1,Y1,Result),
     playGame(w,Result).
 %End of main program
@@ -46,7 +63,45 @@ movePiece(Board, piece(C,Piece,X,Y), X1,Y1,Result) :-
     get_position(Z, X, Y),
     replace(Z,piece("-","-",X,Y),Board,Middle),
     get_position(Z1, X1, Y1),
-    replace(Z1,piece(C,Piece,X1,Y1),Middle,Result).
+    replace(Z1,piece(C,Piece,X1,Y1),Middle,Res),
+    pawn_promotion(Res,piece(C,Piece,X1,Y1), Result).
+
+pawn_promotion(Board, piece(w,pawn,X,Y), Result) :-
+    Y == 8 -> (
+        write("\nPawn Promotion!"),
+        write("\n(queen,rook,bishop,knight)"),
+        write("\nPlease write piece name in lowercase"),
+        read(Piece),
+        pawn_promotion_rule(Piece,Board,piece(w,pawn,X,Y),Result, X, Y, w)
+        );
+        (Result = Board).
+
+pawn_promotion(Board, piece(b,pawn,X,Y), Result) :-
+    Y == 1 -> (
+        write("\nPawn Promotion!"),
+        write("\n(queen,rook,bishop,knight)"),
+        write("\nPlease write piece name in lowercase"),
+        read(Piece),
+        pawn_promotion_rule(Piece,Board,piece(b,pawn,X,Y),Result, X, Y, b)
+        );
+        (Result = Board).
+
+pawn_promotion_rule(pawn, Board, _, Result, X, Y, Color) :-
+    !,
+    Color == b -> (
+    pawn_promotion(Board, piece(b,pawn,X,Y), Result))
+    ;(pawn_promotion(Board, piece(w,pawn,X,Y), Result)).
+
+pawn_promotion_rule(king, Board, _, Result, X, Y, Color) :-
+    !,
+    Color == b -> (
+    pawn_promotion(Board, piece(b,pawn,X,Y), Result))
+    ;(pawn_promotion(Board, piece(w,pawn,X,Y), Result)).
+
+pawn_promotion_rule(Piece, Board, _, Result, X, Y, Color) :-
+    Res = piece(Color,Piece,X,Y),
+    get_position(Z, X, Y),
+    replace(Z, Res, Board, Result).
 
 % replaces the Elem in the list based on the Index    
 replace(_, _, [], []).
@@ -132,5 +187,5 @@ rangePosition(X,Y,NextX,NextY):-
     NextY > -1.
 
 get_position(Z, X, Y):-
-    Z is (X-1)+8*(Y-1).
+    Z is (X-1)+(8*(8-Y)).
 % End of input
