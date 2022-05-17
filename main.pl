@@ -1,5 +1,6 @@
 :- [board].
 :- [pieces].
+:- debug.
 
 % Main program
 instructions :-
@@ -58,7 +59,45 @@ movePiece(Board, piece(C,Piece,X,Y), X1,Y1,Result) :-
     get_position(Z, X, Y),
     replace(Z,piece("-","-",X,Y),Board,Middle),
     get_position(Z1, X1, Y1),
-    replace(Z1,piece(C,Piece,X1,Y1),Middle,Result).
+    replace(Z1,piece(C,Piece,X1,Y1),Middle,Res),
+    pawn_promotion(Res,piece(C,Piece,X1,Y1), Result).
+
+pawn_promotion(Board, piece(w,pawn,X,Y), Result) :-
+    Y == 8 -> (
+        write("\nPawn Promotion!"),
+        write("\n(queen,rook,bishop,knight)"),
+        write("\nPlease write piece name in lowercase"),
+        read(Piece),
+        pawn_promotion_rule(Piece,Board,piece(w,pawn,X,Y),Result, X, Y, w)
+        );
+        (Result = Board).
+
+pawn_promotion(Board, piece(b,pawn,X,Y), Result) :-
+    Y == 1 -> (
+        write("\nPawn Promotion!"),
+        write("\n(queen,rook,bishop,knight)"),
+        write("\nPlease write piece name in lowercase"),
+        read(Piece),
+        pawn_promotion_rule(Piece,Board,piece(b,pawn,X,Y),Result, X, Y, b)
+        );
+        (Result = Board).
+
+pawn_promotion_rule(pawn, Board, _, Result, X, Y, Color) :-
+    !,
+    Color == b -> (
+    pawn_promotion(Board, piece(b,pawn,X,Y), Result))
+    ;(pawn_promotion(Board, piece(w,pawn,X,Y), Result)).
+
+pawn_promotion_rule(king, Board, _, Result, X, Y, Color) :-
+    !,
+    Color == b -> (
+    pawn_promotion(Board, piece(b,pawn,X,Y), Result))
+    ;(pawn_promotion(Board, piece(w,pawn,X,Y), Result)).
+
+pawn_promotion_rule(Piece, Board, _, Result, X, Y, Color) :-
+    Res = piece(Color,Piece,X,Y),
+    get_position(Z, X, Y),
+    replace(Z, Res, Board, Result).
 
 % replaces the Elem in the list based on the Index    
 replace(_, _, [], []).
