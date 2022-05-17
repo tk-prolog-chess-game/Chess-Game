@@ -27,17 +27,8 @@ playGame(b,Board):-
     writeboard(Board),
     write("\nWHITE WINS!").
 
-%playGame(w,Board):-
-    %check_chess(piece(w, king, _, _), Board),
-    %writeboard(Board),
-    %write("\nWhite Check!").
-
-%playGame(b,Board):-
-    %check_chess(piece(b, king, _, _), Board),
-    %writeboard(Board),
-    %write("\nWhite Check!").
-
 playGame(w,Board):-
+    check(w,Board);
     writeboard(Board),
     write("\nWHITE TURN"),
     repeat,
@@ -48,6 +39,7 @@ playGame(w,Board):-
     movePiece(Board,piece(w,Piece,X,Y),X1,Y1,Result),
     playGame(b,Result).
 playGame(b,Board):-
+    check(b,Board);
     writeboard(Board),
     write("\nBLACK TURN"),
     repeat,
@@ -57,13 +49,21 @@ playGame(b,Board):-
     piece_helper(piece(b,Piece,X,Y),X1,Y1,Board),
     movePiece(Board,piece(b,Piece,X,Y),X1,Y1,Result),
     playGame(w,Result).
+
+check(w,Board):-
+    check_chess(piece(w, king, _, _), Board),
+    write("\nWhite Check!").
+
+check(b,Board):-
+    check_chess(piece(b, king, _, _), Board),
+    write("\nBlack Check!").
 %End of main program
 
 movePiece(Board, piece(C,Piece,X,Y), X1,Y1,Result) :-
     get_position(Z, X, Y),
     replace(Z,piece("-","-",X,Y),Board,Middle),
     get_position(Z1, X1, Y1),
-    replace(Z1,piece(C,Piece,X1,Y1),Middle,Res),
+    replace(Z1,piece(C,Piece,X1,Y1),Middle,Result).
     pawn_promotion(Res,piece(C,Piece,X1,Y1), Result).
 
 pawn_promotion(Board, piece(w,pawn,X,Y), Result) :-
@@ -87,13 +87,11 @@ pawn_promotion(Board, piece(b,pawn,X,Y), Result) :-
         (Result = Board).
 
 pawn_promotion_rule(pawn, Board, _, Result, X, Y, Color) :-
-    !,
     Color == b -> (
     pawn_promotion(Board, piece(b,pawn,X,Y), Result))
     ;(pawn_promotion(Board, piece(w,pawn,X,Y), Result)).
 
 pawn_promotion_rule(king, Board, _, Result, X, Y, Color) :-
-    !,
     Color == b -> (
     pawn_promotion(Board, piece(b,pawn,X,Y), Result))
     ;(pawn_promotion(Board, piece(w,pawn,X,Y), Result)).

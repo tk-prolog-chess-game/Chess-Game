@@ -80,7 +80,8 @@ side_stepper(X,Y,X1,Y1,[H|T],X3,Y3) :- %sideways stepper.
 empty_spot(X, Y, Board) :-
     %between(1, 8, X),
     %between(1, 8, Y),
-    member(piece("-", "-", X, Y), Board).
+    member(piece("-", "-", X, Y), Board),
+    !.
 
 legal_move_bishop(piece(Color, bishop, X, Y), Board, X1,Y1) :-
     X1 > 0, X1 < 9,
@@ -99,21 +100,7 @@ legal_move_bishop(piece(Color, bishop, X, Y), Board, X1,Y1) :-
             (X > X1, Y > Y1) -> side_stepper(X,Y,X1,Y1,[-1|-1],X3,Y3)
         )
     ),
-    (
-        empty_spot(X3, Y3, Board);
-        (
-            X1 =:= X3,
-            Y1 =:= Y3,
-            (
-                Color == w,
-                member(piece(b, _, X1, Y1), Board)
-            );
-            (
-                Color == b,
-                member(piece(w, _, X1, Y1), Board)
-            )
-        )
-    ),
+    empty_spot(X3, Y3, Board),
     !.
 
 legal_move_rook(piece(Color, rook, X, Y), Board, X1,Y1) :-
@@ -145,21 +132,7 @@ legal_move_rook(piece(Color, rook, X, Y), Board, X1,Y1) :-
             )
         )
     ),
-    (
-        empty_spot(X3, Y3, Board);
-        (
-            X1 =:= X3,
-            Y1 =:= Y3,
-            (
-                Color == w,
-                member(piece(b, _, X1, Y1), Board)
-            );
-            (
-                Color == b,
-                member(piece(w, _, X1, Y1), Board)
-            )
-        )
-    ),
+    empty_spot(X3, Y3, Board),
     !.
 
 legal_move_queen(piece(Color, queen, X, Y), Board, X1,Y1) :-
@@ -205,21 +178,7 @@ legal_move_queen(piece(Color, queen, X, Y), Board, X1,Y1) :-
             )
         )
     ),
-    (
-        empty_spot(X3, Y3, Board);
-        (
-            X1 =:= X3,
-            Y1 =:= Y3,
-            (
-                Color == w,
-                member(piece(b, _, X1, Y1), Board)
-            );
-            (
-                Color == b,
-                member(piece(w, _, X1, Y1), Board)
-            )
-        )
-    ),
+    empty_spot(X3, Y3, Board),   
     !.
 
 legal_move_king(piece(Color, king, X, Y), Board, X1,Y1) :-
@@ -370,14 +329,127 @@ legal_move_pawn(piece(Color, pawn, X, Y), Board, X1, Y1) :-
     ),
     !.
 
-piece_helper(piece(Color,Piece,X,Y),X1,Y1,Board) :-
+check_last_square(Color,X1,Y1,Board) :-
     (
-        legal_move_bishop(piece(Color, Piece, X, Y), Board, X1,Y1);
-        legal_move_rook(piece(Color, Piece, X, Y), Board, X1,Y1);
-        legal_move_queen(piece(Color, Piece, X, Y), Board, X1,Y1);
-        legal_move_king(piece(Color, Piece, X, Y), Board, X1,Y1);
-        legal_move_knight(piece(Color, Piece, X, Y), Board, X1,Y1);
-        legal_move_pawn(piece(Color, Piece, X, Y), Board, X1,Y1)
+        empty_spot(X1, Y1, Board);
+        (
+            (
+                Color == w,
+                member(piece(b, _, X1, Y1), Board)
+            );
+            (
+                Color == b,
+                member(piece(w, _, X1, Y1), Board)
+            )
+        )
+    ),
+    !.
+
+piece_helper(piece(Color,Piece,X,Y),X1,Y1,Board) :-
+    abs2(X1-X, Z1),
+    abs2(Y1-Y, Z2),
+    (
+        (
+            (
+                Z1 > 1;Z2 >1
+            ),
+            (
+            	(   
+                	X < X1,
+                    Y < Y1,
+                    X2 is X1-1,
+                    Y2 is Y1-1
+                );
+            	(   
+                	X < X1,
+                    Y > Y1,
+                    X2 is X1-1,
+                    Y2 is Y1+1
+                );
+            	(   
+                	X > X1,
+                    Y < Y1,
+                    X2 is X1+1,
+                    Y2 is Y1-1
+                );
+            	(   
+                	X > X1,
+                    Y > Y1,
+                    X2 is X1+1,
+                    Y2 is Y1+1
+                );
+            	(   
+                	X =:= X1,
+                    Y =:= Y1,
+                    X2 is X1,
+                    Y2 is Y1
+                );
+            	(   
+                	X < X1,
+                    Y =:= Y1,
+                    X2 is X1-1,
+                    Y2 is Y1
+                );
+            	(   
+                	X > X1,
+                    Y =:= Y1,
+                    X2 is X1+1,
+                    Y2 is Y1
+                );
+            	(   
+                	X =:= X1,
+                    Y < Y1,
+                    X2 is X1,
+                    Y2 is Y1-1
+                );
+            	(   
+                	X =:= X1,
+                    Y > Y1,
+                    X2 is X1,
+                    Y2 is Y1+1
+                )
+            ),
+            (   
+                legal_move_bishop(piece(Color, Piece, X, Y), Board, X2,Y2),!;
+                legal_move_rook(piece(Color, Piece, X, Y), Board, X2,Y2),!;
+                legal_move_queen(piece(Color, Piece, X, Y), Board, X2,Y2),!
+            ),
+            check_last_square(Color,X1,Y1,Board)
+        );
+        (   
+        	(
+            	(
+                	Z1 =:= 1,
+                    Z2 =:= 1,
+                    (
+                    	Piece == queen;
+                    	Piece == bishop
+                    ),
+                    check_last_square(Color,X1,Y1,Board)
+                );
+            	(
+                	Z1 =:= 0,
+                    Z2 =:= 1,
+                    (
+                    	Piece == queen;
+                    	Piece == rook
+                    ),
+                    check_last_square(Color,X1,Y1,Board)
+                );
+            	(
+                	Z1 =:= 1,
+                    Z2 =:= 0,
+                    (
+                    	Piece == queen;
+                    	Piece == rook
+                    ),
+                    check_last_square(Color,X1,Y1,Board)
+                )
+            );
+            legal_move_king(piece(Color, Piece, X, Y), Board, X1,Y1);
+            legal_move_knight(piece(Color, Piece, X, Y), Board, X1,Y1);
+            legal_move_pawn(piece(Color, Piece, X, Y), Board, X1,Y1)
+        )
     ),
     !.
     
