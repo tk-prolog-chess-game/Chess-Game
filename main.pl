@@ -28,16 +28,7 @@ playGame(b,Board):-
     write("\nWHITE WINS!").
 
 playGame(w,Board):-
-    check_chess(piece(w, king, _, _), Board),
-    writeboard(Board),
-    write("\nWhite Check!").
-
-playGame(b,Board):-
-    check_chess(piece(b, king, _, _), Board),
-    writeboard(Board),
-    write("\nWhite Check!").
-
-playGame(w,Board):-
+    check(w,Board);
     writeboard(Board),
     write("\nWHITE TURN"),
     repeat,
@@ -48,6 +39,7 @@ playGame(w,Board):-
     movePiece(Board,piece(w,Piece,X,Y),X1,Y1,Result),
     playGame(b,Result).
 playGame(b,Board):-
+    check(b,Board);
     writeboard(Board),
     write("\nBLACK TURN"),
     repeat,
@@ -57,6 +49,14 @@ playGame(b,Board):-
     piece_helper(piece(b,Piece,X,Y),X1,Y1,Board),
     movePiece(Board,piece(b,Piece,X,Y),X1,Y1,Result),
     playGame(w,Result).
+
+check(w,Board):-
+    check_chess(piece(w, king, _, _), Board),
+    write("\nWhite Check!").
+
+check(b,Board):-
+    check_chess(piece(b, king, _, _), Board),
+    write("\nBlack Check!").
 %End of main program
 
 movePiece(Board, piece(C,Piece,X,Y), X1,Y1,Result) :-
