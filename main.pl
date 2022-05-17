@@ -1,4 +1,5 @@
 :- [board].
+:- [pieces].
 
 % Main program
 instructions :-
@@ -27,7 +28,7 @@ playGame(w,Board):-
     fixInput(X,Y,X1,Y1),
     get_position(Z, X, Y),
     nth0(Z,Board,piece(w,Piece,X,Y)),
-    %piece_helper(piece(w,Piece,X,Y),X1,Y1,Board),
+    piece_helper(piece(w,Piece,X,Y),X1,Y1,Board),
     movePiece(Board,piece(w,Piece,X,Y),X1,Y1,Result),
     playGame(b,Result).
 playGame(b,Board):-
@@ -37,7 +38,7 @@ playGame(b,Board):-
     fixInput(X,Y,X1,Y1),
     get_position(Z, X, Y),
     nth0(Z,Board,piece(b,Piece,X,Y)),
-    %piece_helper(piece(b,Piece,X,Y),X1,Y1,Board),
+    piece_helper(piece(b,Piece,X,Y),X1,Y1,Board),
     movePiece(Board,piece(b,Piece,X,Y),X1,Y1,Result),
     playGame(w,Result).
 %End of main program
