@@ -80,7 +80,8 @@ side_stepper(X,Y,X1,Y1,[H|T],X3,Y3) :- %sideways stepper.
 empty_spot(X, Y, Board) :-
     %between(1, 8, X),
     %between(1, 8, Y),
-    member(piece("-", "-", X, Y), Board).
+    member(piece("-", "-", X, Y), Board),
+    !.
 
 legal_move_bishop(piece(Color, bishop, X, Y), Board, X1,Y1) :-
     X1 > 0, X1 < 9,
@@ -206,7 +207,8 @@ legal_move_queen(piece(Color, queen, X, Y), Board, X1,Y1) :-
         )
     ),
     (
-        empty_spot(X3, Y3, Board);
+        empty_spot(X3, Y3, Board),
+        !;
         (
             X1 =:= X3,
             Y1 =:= Y3,
