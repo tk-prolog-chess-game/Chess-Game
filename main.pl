@@ -27,15 +27,15 @@ playGame(b,Board):-
     writeboard(Board),
     write("\nWHITE WINS!").
 
-%playGame(w,Board):-
-    %check_chess(piece(w, king, _, _), Board),
-    %writeboard(Board),
-    %write("\nWhite Check!").
+playGame(w,Board):-
+    check_chess(piece(w, king, _, _), Board),
+    writeboard(Board),
+    write("\nWhite Check!").
 
-%playGame(b,Board):-
-    %check_chess(piece(b, king, _, _), Board),
-    %writeboard(Board),
-    %write("\nWhite Check!").
+playGame(b,Board):-
+    check_chess(piece(b, king, _, _), Board),
+    writeboard(Board),
+    write("\nWhite Check!").
 
 playGame(w,Board):-
     writeboard(Board),
