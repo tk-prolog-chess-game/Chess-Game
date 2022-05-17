@@ -93,7 +93,21 @@ legal_move_bishop(piece(Color, bishop, X, Y), Board, X1,Y1) :-
             (X > X1, Y > Y1) -> side_stepper(X,Y,X1,Y1,[-1|-1],X3,Y3)
         )
     ),
-    empty_spot(X3, Y3, Board),
+    (
+        empty_spot(X3, Y3, Board);
+        (
+            X1 =:= X3,
+            Y1 =:= Y3,
+            (
+                Color == w,
+                member(piece(b, _, X1, Y1), Board)
+            );
+            (
+                Color == b,
+                member(piece(w, _, X1, Y1), Board)
+            )
+        )
+    ),
     !.
 
 legal_move_rook(piece(Color, rook, X, Y), Board, X1,Y1) :-
@@ -125,7 +139,21 @@ legal_move_rook(piece(Color, rook, X, Y), Board, X1,Y1) :-
             )
         )
     ),
-    empty_spot(X3, Y3, Board),
+    (
+        empty_spot(X3, Y3, Board);
+        (
+            X1 =:= X3,
+            Y1 =:= Y3,
+            (
+                Color == w,
+                member(piece(b, _, X1, Y1), Board)
+            );
+            (
+                Color == b,
+                member(piece(w, _, X1, Y1), Board)
+            )
+        )
+    ),
     !.
 
 legal_move_queen(piece(Color, queen, X, Y), Board, X1,Y1) :-
@@ -171,7 +199,21 @@ legal_move_queen(piece(Color, queen, X, Y), Board, X1,Y1) :-
             )
         )
     ),
-    empty_spot(X3, Y3, Board),
+    (
+        empty_spot(X3, Y3, Board);
+        (
+            X1 =:= X3,
+            Y1 =:= Y3,
+            (
+                Color == w,
+                member(piece(b, _, X1, Y1), Board)
+            );
+            (
+                Color == b,
+                member(piece(w, _, X1, Y1), Board)
+            )
+        )
+    ),
     !.
 
 legal_move_king(piece(Color, king, X, Y), Board, X1,Y1) :-
@@ -218,7 +260,21 @@ legal_move_king(piece(Color, king, X, Y), Board, X1,Y1) :-
             )
         )
     ),
-    empty_spot(X3, Y3, Board),
+    (
+        empty_spot(X3, Y3, Board);
+        (
+            X1 =:= X3,
+            Y1 =:= Y3,
+            (
+                Color == w,
+                member(piece(b, _, X1, Y1), Board)
+            );
+            (
+                Color == b,
+                member(piece(w, _, X1, Y1), Board)
+            )
+        )
+    ),
     !.
 
 legal_move_knight(piece(Color, knight, X, Y), Board, X1,Y1) :-
@@ -236,7 +292,17 @@ legal_move_knight(piece(Color, knight, X, Y), Board, X1,Y1) :-
             Y2 =:= 1
         )
     ),
-    empty_spot(X1, Y1, Board),
+    (
+        empty_spot(X1, Y1, Board);
+        (
+            Color == w,
+            member(piece(b, _, X1, Y1), Board)
+        );
+        (
+            Color == b,
+            member(piece(w, _, X1, Y1), Board)
+        )
+    ),
     !.
 
 legal_move_pawn(piece(Color, pawn, X, Y), Board, X1, Y1) :-
